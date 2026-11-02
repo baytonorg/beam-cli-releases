@@ -15,9 +15,9 @@ Run `beam --version` before following an example. As of 2 November 2026:
 | --- | --- | --- |
 | 0.5.0 | Latest public installer/release | Authentication, context switching, policy editing, device commands, access management, enrolment, workflows, settings, API catalogue, previews and confirmation |
 | 0.6 | Source feature, not yet a public release | Explicit update checks and interactive update notices |
-| 0.7 | Source/local build, not yet a public release | Automatic shell-completion installation, Flare CSV reports, application statistics and named BQL exports, plus 0.6 features |
+| 0.7 | Source/local build, not yet a public release | Automatic shell-completion installation, Flare CSV reports, application statistics and named BQL exports, MDM safeguards, explicit secret output and origin-bound policy exports, plus 0.6 features |
 
-The guide covers 0.5 unless a section is labelled otherwise. The generated
+The guide describes the current source. MDM safeguards, `--include-secrets` and `beam-policy/v3` exports require the upcoming 0.7 build and are not present in public 0.5.0. The generated
 reference covers 0.7. An example does not change which version the installer
 provides. Check [published releases](https://github.com/baytonorg/beam-cli-releases/releases)
 for newer binaries; `beam COMMAND --help` reflects your installed version.
@@ -54,7 +54,7 @@ for newer binaries; `beam COMMAND --help` reflects your installed version.
 ## Before making a change
 
 Interactive writes show the proposed change and ask for confirmation. Use
-`--dry-run` to inspect a plan, or `--yes` for an intentional unattended write.
+`--dry-run` to inspect a plan, or `--yes` for an intentional unattended write. Bulk, destructive and production changes need the additional acknowledgements described in [MDM safeguards](user-guide.md#mdm-safeguards).
 See [change previews and validation](user-guide.md#change-previews-and-validation).
 
 The token's BEAM permissions still apply. A PAT uses the account's shared active

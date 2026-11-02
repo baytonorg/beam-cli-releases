@@ -34,12 +34,20 @@ File flags described as private request mode 0600 on Unix. On Windows, files inh
 ## Global flags
 
 ```text
-      --environment string   Require this environment ID (or BEAM_ENVIRONMENT); never switches context
-      --group string         Require this active group ID; never switches account context
-      --host string          API origin (or BEAM_HOST); saved credentials are bound to their host
-      --json                 Output JSON
-      --profile string       Saved profile (or BEAM_PROFILE)
-      --timeout duration     HTTP timeout per request (default 30s)
+      --allow-bulk                Acknowledge bulk impact when using --yes (more than 10 targets)
+      --allow-cross-origin        Allow an intentional policy import from another API origin
+      --allow-destructive         Acknowledge irreversible actions when using --yes
+      --allow-production-change   Acknowledge a production policy change when using --yes
+      --allow-unbound-export      Allow a legacy policy export without API origin metadata
+      --allow-unverified-target   Allow destructive device actions on older Core without atomic enrolment preconditions
+      --environment string        Require this environment ID (or BEAM_ENVIRONMENT); never switches context
+      --expected-count int        Require exactly this many explicit targets (optional assertion)
+      --group string              Require this active group ID; never switches account context
+      --host string               API origin (or BEAM_HOST); saved credentials are bound to their host
+      --include-secrets           Include credential and managed configuration values in previews and output
+      --json                      Output JSON
+      --profile string            Saved profile (or BEAM_PROFILE)
+      --timeout duration          HTTP timeout per request (default 30s)
 ```
 
 ## beam
