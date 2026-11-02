@@ -118,7 +118,7 @@ retains the empty result and metadata.
 Known credential fields and opaque managed configurations are redacted, including
 enrolment QR credentials returned by wildcard queries. This cannot identify
 arbitrary secrets stored under innocuous field names; protect exported data
-according to its contents. From the upcoming 0.7 safety build, use `--include-secrets` for deliberate verbatim credential and managed configuration values in BQL CSV/JSON. Protect those exports appropriately.
+according to its contents. From public 0.7.0, use `--include-secrets` for deliberate verbatim credential and managed configuration values in BQL CSV/JSON. Protect those exports appropriately.
 
 ## Consistency and limits
 

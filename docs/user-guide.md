@@ -7,9 +7,10 @@ with IDs returned by your own BEAM deployment. Commands assume a terminal where
 you can review writes. Flags, permissions and request schemas are also available
 through `--help` and `api describe`.
 
-The public release is currently **0.5.0**. Update checks require **0.6**; automatic
-completion setup, named CSV reports, BQL exports, MDM safeguards, `--include-secrets` and origin-bound policy exports require **0.7**, currently a source/local build. See the
-[version table](index.md#choose-the-right-version) before using those commands.
+The current public release is **0.7.0**. It includes update notices, automatic
+completion setup, named CSV reports, BQL exports, MDM safeguards,
+`--include-secrets` and origin-bound policy exports. See the
+[version table](index.md#choose-the-right-version) before using an older binary.
 
 ## Contents
 
@@ -172,7 +173,7 @@ failure, inspect the resource before repeating a potentially completed operation
 
 ### MDM safeguards
 
-These options require the upcoming 0.7 safety build. Public 0.5.0 does not include them.
+These options are included in public 0.7.0. Older 0.5.0 binaries do not include them.
 
 Safeguards require acknowledgement and do not impose a bulk size limit:
 

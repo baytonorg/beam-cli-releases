@@ -13,13 +13,13 @@ Run `beam --version` before following an example. As of 2 November 2026:
 
 | Version | Availability | Features |
 | --- | --- | --- |
-| 0.5.0 | Latest public installer/release | Authentication, context switching, policy editing, device commands, access management, enrolment, workflows, settings, API catalogue, previews and confirmation |
-| 0.6 | Source feature, not yet a public release | Explicit update checks and interactive update notices |
-| 0.7 | Source/local build, not yet a public release | Automatic shell-completion installation, Flare CSV reports, application statistics and named BQL exports, MDM safeguards, explicit secret output and origin-bound policy exports, plus 0.6 features |
+| 0.5.0 | Previous public release | Authentication, context switching, policy editing, device commands, access management, enrolment, workflows, settings, API catalogue, previews and confirmation |
+| 0.6 | Features included in public 0.7.0 | Explicit update checks and interactive update notices |
+| 0.7.0 | Latest public installer/release | Automatic shell-completion installation, Flare CSV reports, application statistics and named BQL exports, MDM safeguards, explicit secret output and origin-bound policy exports, plus 0.6 features |
 
-The guide describes the current source. MDM safeguards, `--include-secrets` and `beam-policy/v3` exports require the upcoming 0.7 build and are not present in public 0.5.0. The generated
-reference covers 0.7. An example does not change which version the installer
-provides. Check [published releases](https://github.com/baytonorg/beam-cli-releases/releases)
+The guide and generated reference cover public 0.7.0, including MDM safeguards,
+`--include-secrets` and origin-bound `beam-policy/v3` exports. Check
+[published releases](https://github.com/baytonorg/beam-cli-releases/releases)
 for newer binaries; `beam COMMAND --help` reflects your installed version.
 
 ## What can I do?
