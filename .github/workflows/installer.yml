@@ -2,6 +2,7 @@ name: Installer checks
 on:
   push:
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -16,3 +17,9 @@ jobs:
       - run: python3 -m unittest discover -s tests -v
       - if: runner.os == 'Linux'
         run: shellcheck -s sh install.sh
+      - name: Install the public release without GitHub authentication
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/baytonorg/beam-cli-releases/main/install.sh | sh -s -- --bin-dir "$RUNNER_TEMP/beam-public-smoke/bin"
+          "$RUNNER_TEMP/beam-public-smoke/bin/beam" --version
+          "$RUNNER_TEMP/beam-public-smoke/bin/beam" --help
