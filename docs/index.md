@@ -15,7 +15,7 @@ Run `beam --version` before following an example. As of 2 November 2026:
 | --- | --- | --- |
 | 0.5.0 | Latest public installer/release | Authentication, context switching, policy editing, device commands, access management, enrolment, workflows, settings, API catalogue, previews and confirmation |
 | 0.6 | Source feature, not yet a public release | Explicit update checks and interactive update notices |
-| 0.7 | Source/local build, not yet a public release | Flare CSV reports, application statistics and named BQL exports, plus 0.6 features |
+| 0.7 | Source/local build, not yet a public release | Automatic shell-completion installation, Flare CSV reports, application statistics and named BQL exports, plus 0.6 features |
 
 The guide covers 0.5 unless a section is labelled otherwise. The generated
 reference covers 0.7. An example does not change which version the installer
@@ -47,7 +47,8 @@ for newer binaries; `beam COMMAND --help` reflects your installed version.
 | Export app distribution, versions and devices (0.7) | `reports applications/application/application-versions/application-devices` | [Application reports](reports.md#applications) |
 | Run BQL and write records to a file (0.7) | `reports query/schema` | [BQL](reports.md#bql) |
 | Call another published endpoint or inspect its request schema | `api operations/describe/call`, `api PATH` | [API access](user-guide.md#api-access) |
-| Script safely, use JSON or install shell completion | `--json`, `--yes`, `--dry-run`, `completion` | [Automation and output](user-guide.md#automation-and-output) |
+| Script safely or use JSON | `--json`, `--yes`, `--dry-run` | [Automation and output](user-guide.md#automation-and-output) |
+| Enable Tab completion automatically (0.7) | `completion install`, with shell detection or `--shell` | [Shell completion](user-guide.md#shell-completion) |
 | Check for an update (0.6) | `update check` | [Updates and troubleshooting](user-guide.md#updates-and-troubleshooting) |
 
 ## Before making a change

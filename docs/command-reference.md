@@ -2,7 +2,7 @@
 
 [Documentation index](index.md) | [User guide](user-guide.md)
 
-Generated from the 0.7 command tree. The public installer currently provides 0.5.0. `beam update` requires 0.6 or newer; CSV report exports, `reports list`, `reports query` and `reports schema` require 0.7 or newer. `reports create/get` also exist in 0.5. Use `beam --version` and your installed `--help` to confirm availability.
+Generated from the 0.7 command tree. The public installer currently provides 0.5.0. `beam update` requires 0.6 or newer; CSV report exports, `reports list`, `reports query`, `reports schema` and `completion install` require 0.7 or newer. `reports create/get` also exist in 0.5. Use `beam --version` and your installed `--help` to confirm availability.
 
 Arguments in capitals are placeholders. Flags shown under **Local flags** apply to that command; **Global flags** apply throughout the tree. Defaults are shown by the CLI's flag formatter. A flag appearing here does not imply permission or backend support. See the user guide for validation, request-file examples and backend gaps.
 
@@ -249,6 +249,9 @@ Generate the autocompletion script for beam for the specified shell.
 See each sub-command's help for details on how to use the generated script.
 
 
+Use 'beam completion install' to detect your shell and configure completion automatically.
+The bash, zsh, fish and powershell subcommands print scripts without installing them.
+
 ```text
 beam completion [flags]
 ```
@@ -257,6 +260,7 @@ Subcommands:
 
 - [bash](#beam-completion-bash): Generate the autocompletion script for bash
 - [fish](#beam-completion-fish): Generate the autocompletion script for fish
+- [install](#beam-completion-install): Detect your shell and install tab completion for your user
 - [powershell](#beam-completion-powershell): Generate the autocompletion script for powershell
 - [zsh](#beam-completion-zsh): Generate the autocompletion script for zsh
 
@@ -329,6 +333,36 @@ beam completion fish [flags]
 ```text
   -h, --help              help for fish
       --no-descriptions   disable completion descriptions
+```
+
+## beam completion install
+
+Detect your shell and install tab completion for your user
+
+Detect the parent shell (falling back to SHELL) and install user-scoped completion.
+Supports Bash, Zsh, Fish and PowerShell. Existing startup files are backed up,
+and only a BEAM-managed block is added or updated. No BEAM login is required.
+Open a new terminal after installing, or run the activation command printed.
+Bash requires the bash-completion package. Use --dry-run to inspect file paths.
+
+```text
+beam completion install [flags]
+```
+
+**Local flags**
+
+```text
+      --dry-run        Show planned file paths without changing files
+  -h, --help           help for install
+      --shell string   Override shell detection: bash, zsh, fish or powershell
+```
+
+**Examples**
+
+```sh
+  beam completion install
+  beam completion install --shell zsh
+  beam completion install --dry-run
 ```
 
 ## beam completion powershell

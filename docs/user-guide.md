@@ -7,8 +7,8 @@ with IDs returned by your own BEAM deployment. Commands assume a terminal where
 you can review writes. Flags, permissions and request schemas are also available
 through `--help` and `api describe`.
 
-The public release is currently **0.5.0**. Update checks require **0.6**; named CSV
-reports and BQL exports require **0.7**, currently a source/local build. See the
+The public release is currently **0.5.0**. Update checks require **0.6**; automatic
+completion setup, named CSV reports and BQL exports require **0.7**, currently a source/local build. See the
 [version table](index.md#choose-the-right-version) before using those commands.
 
 ## Contents
@@ -30,6 +30,7 @@ reports and BQL exports require **0.7**, currently a source/local build. See the
 - [Reports and BQL](#reports-and-bql)
 - [API access](#api-access)
 - [Automation and output](#automation-and-output)
+- [Shell completion](#shell-completion)
 - [Updates and troubleshooting](#updates-and-troubleshooting)
 
 ## Getting started
@@ -646,13 +647,74 @@ already completed, so inspect errors and server state before retrying.
 | 9 | Entity action errors or partial failure |
 | 130 | Cancelled |
 
-Generate completion for your shell using `beam completion bash`, `zsh`, `fish`
-or `powershell`. Each command's `--help` contains the shell's setup instructions.
-For a temporary Bash session, for example:
+## Shell completion
+
+**Automatic installation requires 0.7**, currently a source/local build. Run:
 
 ```sh
-source <(beam completion bash)
+beam completion install
 ```
+
+The installer detects the shell that launched BEAM, falling back to your `SHELL`
+environment variable. It installs completion for your user and configures startup
+automatically. Open a new terminal and type `beam ` followed by Tab. To activate
+in your existing terminal, run the exact activation command printed by the
+installer. A child process cannot load functions into the shell that launched it.
+
+Choose a shell explicitly, inspect planned files, or get structured output:
+
+```sh
+beam completion install --shell zsh
+beam completion install --dry-run
+beam completion install --shell powershell --dry-run --json
+```
+
+This is local setup and needs no BEAM login or `--yes`. `--dry-run` performs
+detection and validation but writes no files. An unknown shell fails with guidance
+to choose `--shell`; it does not guess from the operating system alone.
+
+| Shell | Automatic setup |
+| --- | --- |
+| Zsh | Adds a managed block to `${ZDOTDIR:-HOME}/.zshrc`, initialises `compinit` if needed, and loads the generated script |
+| Bash | Adds a managed block to `.bashrc` and the first existing `.bash_profile`, `.bash_login` or `.profile`; creates `.bash_profile` only if none exists, so both login and non-login terminals load completion |
+| Fish | Writes `${XDG_CONFIG_HOME:-~/.config}/fish/completions/beam.fish`, which Fish loads automatically |
+| PowerShell | Queries the selected PowerShell executable for `$PROFILE.CurrentUserAllHosts` and adds a managed block there, including redirected profile locations |
+
+Zsh, Bash and PowerShell scripts are saved under
+`${XDG_DATA_HOME:-~/.local/share}/beam/completions/`. Zsh honours an exported
+`ZDOTDIR`. Explicit XDG directory variables must be absolute. PowerShell must be
+installed and on PATH; native Windows users should use PowerShell. The installer
+does not change PowerShell execution policy if it prevents loading profiles.
+
+Bash requires the `bash-completion` package. The installer finds and loads its
+standard Linux/Homebrew startup script. If the dependency is missing, it stops
+before changing files and asks you to install it through your package manager.
+
+Existing files are backed up beside their targets as `NAME.beam-backup-*` before
+replacement. Unrelated startup text, UTF-8 BOMs and line endings are retained, and
+symlinked startup files keep their links. Existing startup permissions are
+preserved; new files/backups use 0600 on Unix and inherit folder permissions on
+Windows. Existing startup files must be UTF-8 text; unsupported encodings or broken
+BEAM markers stop setup before changes. Custom completion files at the destination
+are not overwritten.
+
+Repeat `beam completion install` after upgrading. Unchanged files are left alone;
+the BEAM block is updated in place and does not accumulate duplicate entries.
+To undo setup, remove that block and its generated script; Fish needs only its
+generated `beam.fish` removed. Backups contain the original files if restoration
+is needed.
+
+The existing `beam completion bash`, `zsh`, `fish` and `powershell` commands still
+**print a script** rather than install it. In older releases or for temporary
+Zsh setup, load the generated output into your shell yourself:
+
+```zsh
+autoload -Uz compinit && compinit
+source <(beam completion zsh)
+```
+
+Running `beam completion zsh` alone prints the script into the terminal. This is
+expected generator output and does not enable tab completion by itself.
 
 ## Updates and troubleshooting
 
@@ -671,7 +733,7 @@ upgrade before update checks become available.
 | Problem | Check or next step |
 | --- | --- |
 | `beam: command not found` | Add your installation directory to `PATH`; verify with its absolute executable path |
-| Unknown command from this guide | Check `beam --version`; CSV/BQL helpers require 0.7, update checks 0.6 |
+| Unknown command from this guide | Check `beam --version`; automatic completion setup and CSV/BQL helpers require 0.7, update checks 0.6 |
 | No host configured | Log in with `--host` set to your API origin, or inject `BEAM_HOST` |
 | Keyring unavailable | Use the correct logged-in OS session/Secret Service; for headless jobs inject a service token |
 | HTTP 401 | Check token validity, expiry and API deployment; login again or replace the injected secret |

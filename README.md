@@ -9,8 +9,8 @@ can do. Start with the [worked user guide](docs/user-guide.md), or look up a
 command in the [command and flag reference](docs/command-reference.md).
 
 **Version status (2 November 2026):** the public installer currently provides
-**0.5.0**. Automatic update notices require 0.6; native CSV/application/BQL exports
-require 0.7. Those newer features are documented and available in source/local
+**0.5.0**. Automatic update notices require 0.6; automatic completion setup and
+native CSV/application/BQL exports require 0.7. Those newer features are documented and available in source/local
 builds, but are not yet published binaries. Check `beam --version` and the
 [version table](docs/index.md#choose-the-right-version).
 
@@ -154,6 +154,25 @@ deletion, credential output and account changes according to their impact.
 Personal-token environment/group switches change the account context shared with
 your browser and other personal tokens. Check `beam context` before writes and use
 fixed-group service tokens for parallel automation.
+
+## Enable shell completion
+
+From **0.7** (currently a source/local build), run:
+
+```sh
+beam completion install
+```
+
+It detects your shell and configures completion automatically for future terminals.
+For an already-open terminal, run the activation command it prints. Use
+`--dry-run` to preview files or `--shell zsh` (also Bash, Fish or PowerShell) to
+override detection. Repeat runs update the same BEAM block, preserve unrelated
+settings and back up changed existing files. Bash needs `bash-completion`.
+
+The current public 0.5 release has script generators only. Running
+`beam completion zsh` prints a script; it does not install or enable it.
+See [shell completion](docs/user-guide.md#shell-completion) for temporary setup,
+paths, prerequisites and restoration.
 
 ## Upgrade and uninstall
 
