@@ -4,6 +4,37 @@ Official downloads for `beam`, the command-line client for BEAM device managemen
 This repository contains the installer, documentation and compiled releases. The
 application source is maintained separately in a private repository.
 
+**[Browse the complete documentation](docs/index.md)** for everything the CLI
+can do. Start with the [worked user guide](docs/user-guide.md), or look up a
+command in the [command and flag reference](docs/command-reference.md).
+
+**Version status (2 November 2026):** the public installer currently provides
+**0.5.0**. Automatic update notices require 0.6; native CSV/application/BQL exports
+require 0.7. Those newer features are documented and available in source/local
+builds, but are not yet published binaries. Check `beam --version` and the
+[version table](docs/index.md#choose-the-right-version).
+
+## What can I do with it?
+
+| Area | Capabilities | Guide |
+| --- | --- | --- |
+| Authentication and context | PAT/service-token login, profiles, environments, group switching and context checks | [Get started](docs/user-guide.md#getting-started) |
+| Policies | Export editable JSON, validate, diff and push; create, clone, update and delete | [Policy editing](docs/user-guide.md#policy-editing) |
+| Managed configurations | Inspect and edit an app's complete configuration within an exported policy | [Managed configurations](docs/user-guide.md#managed-configurations) |
+| Devices | Search/list/details, rename, assign group/policy, sync, delete and wipe | [Devices](docs/user-guide.md#devices) |
+| Commands and bulk actions | Lock, reboot, password/lost-mode/eSIM/app-data commands and web entity actions with explicit targets | [Device commands](docs/user-guide.md#device-commands) |
+| Groups and users | Create/update groups, invite/add users, change roles, remove environment access and delete accounts | [Groups and users](docs/user-guide.md#groups-and-users) |
+| Roles and tokens | Discover permissions; create/update/delete roles; create/list/revoke personal and service tokens | [Roles and tokens](docs/user-guide.md#roles-and-tokens) |
+| Enrolment | Create, inspect and delete one-time/reusable enrolment tokens | [Enrolment](docs/user-guide.md#enrolment) |
+| Workflows and settings | Create/update workflows, assign/unassign devices/groups, read/write account/contact/general settings | [Workflows and settings](docs/user-guide.md#workflows-and-settings) |
+| Reports | Request/check application inventory generation; from 0.7, export Flare reports, app distribution and BQL as CSV/JSON | [Reports and BQL](docs/user-guide.md#reports-and-bql) |
+| API and automation | All 122 captured API operations, schemas, raw requests, JSON output, dry runs and shell completion | [API access](docs/user-guide.md#api-access) |
+
+Commands still require your BEAM permissions and backend support. Group deletion,
+single-group user detach and browser/device-code login need Core changes. See
+[coverage and known limits](docs/api-coverage.md) rather than assuming every web
+operation is implemented successfully by the backend.
+
 ## Install on macOS or Linux
 
 ```sh
@@ -103,8 +134,9 @@ beam --help
 Use `beam COMMAND --help` to explore flags and subcommands. Commands cover policies,
 devices, groups, users, roles, API tokens, enrolment, workflows and generic API access.
 Some operations depend on backend support and your account permissions. The
-archives contain the complete command guide in `README.md` and operation coverage
-in `docs/api-coverage.md`.
+online [user guide](docs/user-guide.md) explains the workflows, while the
+[command reference](docs/command-reference.md) lists every command and flag.
+Release archives also contain a documentation snapshot for that release.
 
 For a policy get-edit-put workflow:
 
