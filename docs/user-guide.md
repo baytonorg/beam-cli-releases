@@ -692,9 +692,10 @@ before changing files and asks you to install it through your package manager.
 
 Existing files are backed up beside their targets as `NAME.beam-backup-*` before
 replacement. Unrelated startup text, UTF-8 BOMs and line endings are retained, and
-symlinked startup files keep their links. Existing startup permissions are
-preserved; new files/backups use 0600 on Unix and inherit folder permissions on
-Windows. Existing startup files must be UTF-8 text; unsupported encodings or broken
+symlinked startup files keep their links. Existing Unix startup modes are
+preserved, and new files/backups use 0600 on Unix. On Windows, replacements and
+backups inherit destination-folder permissions; existing file-specific ACLs are
+not copied, so use a protected folder. Existing startup files must be UTF-8 text; unsupported encodings or broken
 BEAM markers stop setup before changes. Custom completion files at the destination
 are not overwritten.
 
