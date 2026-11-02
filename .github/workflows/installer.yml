@@ -20,6 +20,6 @@ jobs:
       - name: Install the public release without GitHub authentication
         shell: bash
         run: |
-          curl -fsSL https://raw.githubusercontent.com/baytonorg/beam-cli-releases/main/install.sh | sh -s -- --bin-dir "$RUNNER_TEMP/beam-public-smoke/bin"
+          sh ./install.sh --bin-dir "$RUNNER_TEMP/beam-public-smoke/bin"
           "$RUNNER_TEMP/beam-public-smoke/bin/beam" --version
           "$RUNNER_TEMP/beam-public-smoke/bin/beam" --help
