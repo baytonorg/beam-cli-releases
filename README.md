@@ -10,9 +10,11 @@ command in the [command and flag reference](docs/command-reference.md).
 
 **Version status (2 November 2026):** the public installer currently provides
 **0.5.0**. Automatic update notices require 0.6; automatic completion setup and
-native CSV/application/BQL exports require 0.7. Those newer features are documented and available in source/local
+native CSV/application/BQL exports and the new MDM safeguards require 0.7. Those newer features are documented and available in source/local
 builds, but are not yet published binaries. Check `beam --version` and the
 [version table](docs/index.md#choose-the-right-version).
+
+The upcoming safety build adds [bulk acknowledgement, destructive-action intent, enrolment preconditions and explicit secret output](docs/user-guide.md#mdm-safeguards). Those fixes are not included in the current public 0.5.0 download.
 
 ## What can I do with it?
 

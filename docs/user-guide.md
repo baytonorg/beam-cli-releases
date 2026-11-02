@@ -8,7 +8,7 @@ you can review writes. Flags, permissions and request schemas are also available
 through `--help` and `api describe`.
 
 The public release is currently **0.5.0**. Update checks require **0.6**; automatic
-completion setup, named CSV reports and BQL exports require **0.7**, currently a source/local build. See the
+completion setup, named CSV reports, BQL exports, MDM safeguards, `--include-secrets` and origin-bound policy exports require **0.7**, currently a source/local build. See the
 [version table](index.md#choose-the-right-version) before using those commands.
 
 ## Contents
@@ -16,6 +16,7 @@ completion setup, named CSV reports and BQL exports require **0.7**, currently a
 - [Getting started](#getting-started)
 - [Context and profiles](#context-and-profiles)
 - [Change previews and validation](#change-previews-and-validation)
+- [MDM safeguards](#mdm-safeguards)
 - [Finding and reading resources](#finding-and-reading-resources)
 - [Policy editing](#policy-editing)
 - [Policy lifecycle](#policy-lifecycle)
@@ -142,7 +143,7 @@ Update the displayed fields.
 Continue? [y/N]
 ```
 
-Only `y` or `yes` approves. Blank input, EOF or another answer cancels without
+For up to 10 targets, `y` or `yes` approves. Larger selections require their displayed count. Blank input, EOF or another answer cancels with exit 130 without
 submitting the target request. `--dry-run` prints a redacted JSON plan and does not
 submit the change, but may authenticate and read current values. Headless writes
 need `--yes`. Input read from stdin also needs `--yes` or `--dry-run`, so JSON
@@ -151,7 +152,7 @@ cannot answer its own confirmation prompt.
 Named updates show comparable current fields where an ordinary read exists;
 creations show proposed fields. Device commands and deletion identify the targets
 and requested action. They cannot predict final device state. Recognised secrets
-and opaque managed configurations are redacted in previews.
+and opaque managed configurations are redacted in previews and terminal results unless `--include-secrets` is supplied.
 
 Required flags, non-empty IDs/names, email syntax, input types and unknown fields
 are checked locally for named forms. For example, this fails with exit 2 before
@@ -166,10 +167,34 @@ forms accept either field flags **or** `--file request.json`, not both. Request
 files contain writable fields, not API response envelopes. Use files for complex
 payloads; do not build escaped JSON with `printf`.
 
-The CLI rechecks context and relevant target fields after an interactive approval.
-Core has no atomic conditional-write contract, so a final race remains. `--yes`
-bypasses interactive review. Writes are not automatically retried; after a network
+The CLI rechecks context before writes and checks destructive target identity even with `--yes`. Compatible Core versions also enforce enrolment preconditions under a row lock. Other mutations still have a final race without a general conditional-write contract. `--yes` bypasses interactive review. Writes are not automatically retried; after a network
 failure, inspect the resource before repeating a potentially completed operation.
+
+### MDM safeguards
+
+These options require the upcoming 0.7 safety build. Public 0.5.0 does not include them.
+
+Safeguards require acknowledgement and do not impose a bulk size limit:
+
+- Up to 10 explicit targets use the usual confirmation. Above 10, type the displayed target count once. Unattended bulk actions use `--yes --allow-bulk`.
+- `--expected-count N` optionally asserts the exact count, including zero. Duplicate IDs and implicit `all` selections are rejected. Supply action IDs and command types in the JSON body, not query fields.
+- Irreversible actions, including wipe, deletion, ownership relinquishment, password reset, clearing app data and removing an eSIM, require `--allow-destructive` with `--yes`. Interactive review shows the warning in the normal confirmation.
+- A destructive device action reads and rechecks the enrolment, ownership, management mode and assignment. Compatible Core versions issue an opaque binding and enforce it under a device row lock, with permissions checked again. Guarded writes use a separate versioned route, so an older node rejects them during rolling deployment. There is no automatic fallback.
+- Older Core versions require `--allow-unverified-target` to accept the remaining read-to-write race. That override does not disable the CLI's identity checks. It cannot make an API acknowledgement prove physical wipe completion.
+- Production policy updates require `--allow-production-change` with `--yes`. Previews show lifecycle and returned device/token counts, or `unknown` when Core does not supply them. This applies to named, raw and catalogue updates.
+- Default previews and terminal results redact recognised credentials and opaque managed configuration. Add `--include-secrets` to reveal values deliberately, including BQL results. Request values sent to Core are preserved. Server error echoes remain redacted.
+- Token creation requires `--output FILE` or `--include-secrets` before sending the request, so a one-time credential is recoverable. Explicit output files retain complete response values, use mode 0600 on Unix, and never overwrite an existing file. Windows uses the destination directory's ACLs.
+- Declining, EOF and interruption exit 130 without submitting the mutation. Input file paths must be regular files; use `--file -` for a pipe.
+
+```sh
+beam devices action reboot --file selected-devices.json --yes --allow-bulk --expected-count 500
+beam devices wipe DEVICE_ID --yes --allow-destructive
+beam tokens personal create --name "Local automation" --output new-token.json --yes
+beam devices show DEVICE_ID --include-secrets
+beam policies put POLICY_ID --file policy.json --yes --allow-production-change
+```
+
+`selected-devices.json` contains an explicit `ids` array. Bulk requests still follow Core's per-action rules and permissions. Partial failures return structured errors and exit 9; inspect those results before retrying.
 
 ## Finding and reading resources
 
@@ -225,7 +250,7 @@ beam policies put POLICY_ID --file policy.json
 ```
 
 `get` is an alias of `export`; `put` and `push` are aliases of `apply`. An export
-is a `beam-policy/v2` document with `id`, `group_id`, `updated_at`, `base_sha256`,
+is a `beam-policy/v3` document with `origin`, `id`, `group_id`, `updated_at`, `base_sha256`,
 `name`, `description` and an editable `config` object. Keep the identity, timestamp
 and fingerprint unchanged. The fingerprint identifies the original server state,
 not your edited configuration. Export into a fresh file to start over.
@@ -261,7 +286,7 @@ beam policies delete POLICY_ID --dry-run
 
 Creation needs `name`, `group_id` and a valid `deployment_scenario` from Core. Use
 `api describe policies.policyClone` for the clone request schema. These commands accept
-Core request objects, rather than exported `beam-policy/v2` documents. Partial
+Core request objects, rather than exported `beam-policy/v3` documents. Partial
 `update` preserves omitted writable fields and supports lifecycle fields beyond
 the guarded editor workflow. Core rejects immutable conversions and deletion of
 policies associated with devices. Use guarded `put` for ordinary config editing.
@@ -635,7 +660,7 @@ already completed, so inspect errors and server state before retrying.
 
 | Exit | Meaning |
 | --- | --- |
-| 0 | Success, including a declined interactive confirmation |
+| 0 | Success |
 | 1 | General, transport or server failure |
 | 2 | Invalid arguments/input or missing confirmation/context assertion |
 | 3 | Authentication failed (HTTP 401) |
@@ -643,9 +668,9 @@ already completed, so inspect errors and server state before retrying.
 | 5 | Not found (HTTP 404) |
 | 6 | Conflict or failed precondition (HTTP 409/412) |
 | 7 | Server validation failure (HTTP 422) |
-| 8 | Policy saved but returned editable values differ from the request |
+| 8 | Policy saved but returned editable or protected values differ from the request |
 | 9 | Entity action errors or partial failure |
-| 130 | Cancelled |
+| 130 | Declined confirmation, EOF or interruption |
 
 ## Shell completion
 
@@ -750,3 +775,5 @@ upgrade before update checks become available.
 For help, include the CLI version, OS, failing command with placeholders and the
 redacted error in a [documentation/distribution issue](https://github.com/baytonorg/beam-cli-releases/issues).
 Do not attach tokens, enrolment credentials or unredacted managed configurations.
+
+Policy export safety: `policies get ID --output policy.json` preserves the complete editable document, including credentials, in a new private file. For stdout, explicitly add `--include-secrets`. Version 3 exports bind the API `origin`; importing from another host requires `--allow-cross-origin`. Legacy version 2 documents require `--allow-unbound-export`. Prefer re-exporting. Keep identity, origin and fingerprint fields unchanged during ordinary edits. Apply verifies returned identity, group, editable values and carried lifecycle flags, and reports a redacted mismatch with exit 8.
