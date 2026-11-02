@@ -12,7 +12,7 @@ main() (
 
     fail() { printf 'beam installer: %s\n' "$*" >&2; exit 1; }
     # Invoked by the EXIT trap.
-    # shellcheck disable=SC2329
+    # shellcheck disable=SC2329,SC2317
     cleanup() {
         [ -z "$staged_binary" ] || rm -f "$staged_binary"
         [ -z "$work_dir" ] || rm -rf "$work_dir"
@@ -36,7 +36,8 @@ EOF
     while [ "$#" -gt 0 ]; do
         case "$1" in
             --version|--bin-dir)
-                [ "$#" -ge 2 ] && [ -n "$2" ] || fail "$1 requires a value"
+                [ "$#" -ge 2 ] || fail "$1 requires a value"
+                [ -n "$2" ] || fail "$1 requires a value"
                 case "$2" in --*) fail "$1 requires a value" ;; esac
                 case "$1" in
                     --version) version=$2 ;;
@@ -97,7 +98,8 @@ EOF
     actual=$(digest "$work_dir/$archive") || fail 'could not calculate archive checksum'
     [ "$actual" = "$expected" ] || fail 'checksum mismatch; nothing was installed'
     tar -xzf "$work_dir/$archive" -C "$work_dir" beam || fail 'could not extract the BEAM executable'
-    [ -f "$work_dir/beam" ] && [ ! -L "$work_dir/beam" ] || fail 'archive does not contain a regular BEAM executable'
+    [ -f "$work_dir/beam" ] || fail 'archive does not contain a regular BEAM executable'
+    [ ! -L "$work_dir/beam" ] || fail 'archive executable is a symbolic link'
 
     mkdir -p "$bin_dir" || fail "could not create $bin_dir"
     [ ! -L "$bin_dir/beam" ] || fail 'destination is a symbolic link; upgrade it through its package manager or choose another --bin-dir'
